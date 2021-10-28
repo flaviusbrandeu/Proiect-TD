@@ -5,7 +5,7 @@
 #ifndef __AT_COMMAND_PARSER__
 #define __AT_COMMAND_PARSER__
 
-include <stdint.h>
+#include <stdint.h>
 
 #define AT_COMMAND_MAX_LINES 100
 #define AT_COMMAND_MAX_LINE_SIZE 100
@@ -21,14 +21,13 @@ typedef struct {
 
 static AT_COMMAND_DATA data;
 
-typedef enum{
+typedef enum {
     STATE_MACHINE_NOT_READY,
     STATE_MACHINE_READY_OK,
     STATE_MACHINE_READY_ERROR,
 } STATE_MACHINE_RETURN_VALUE;
 
 // Functions declaration
-STATE_MACHINE_RETURN_VALUE at_command_parse(uint8_t current_char)
-
+STATE_MACHINE_RETURN_VALUE at_command_parse(uint8_t current_char);
 
 #endif //__AT_COMMAND_PARSER__
