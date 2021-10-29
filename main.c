@@ -39,7 +39,7 @@ int main(int argc, char *argv[]) {
         }
     } while ((newLen = fread(source, sizeof(char), MAXBUFLEN, fp)));
 
-    switch(state){
+    switch (state) {
         case STATE_MACHINE_READY_ERROR:
             printf("STATE_MACHINE_READY_ERROR\n");
             break;
@@ -50,7 +50,6 @@ int main(int argc, char *argv[]) {
             printf("STATE_MACHINE_NOT_READY\n");
             break;
     }
-
     fclose(fp);
     return 0;
 }

@@ -3,6 +3,7 @@
 //
 
 #include <stdio.h>
+#include <string.h>
 #include "parser.h"
 
 STATE_MACHINE_RETURN_VALUE at_command_parse(uint8_t current_char) {
@@ -14,6 +15,7 @@ STATE_MACHINE_RETURN_VALUE at_command_parse(uint8_t current_char) {
         case 0: {
             if (current_char == '\r') {
                 state = 1;
+                data.line_count = 0;
                 return STATE_MACHINE_NOT_READY;
             } else {
                 return STATE_MACHINE_NOT_READY;
@@ -60,6 +62,12 @@ STATE_MACHINE_RETURN_VALUE at_command_parse(uint8_t current_char) {
         case 5: {
             if (current_char == '\n') {
                 state = 6;
+                for (uint8_t i = 0; i < data.line_count; i++) {
+                    for (uint8_t j = 0; j < strlen(data.characters[i]); j++) {
+                        printf("%c", data.characters[i][j]);
+                    }
+                    printf("\n");
+                }
                 return STATE_MACHINE_READY_OK;
             } else {
                 return STATE_MACHINE_READY_ERROR;
@@ -100,9 +108,20 @@ STATE_MACHINE_RETURN_VALUE at_command_parse(uint8_t current_char) {
         case 11: {
             if (current_char >= 32 && current_char <= 126) {
                 state = 11;
+                if (data.line_count < AT_COMMAND_MAX_LINES) {
+                    if (col_index < AT_COMMAND_MAX_LINE_SIZE - 1) {
+                        data.characters[data.line_count][col_index] = current_char;
+                        col_index++;
+                    }
+                }
                 return STATE_MACHINE_NOT_READY;
             } else if (current_char == '\r') {
                 state = 12;
+                if (data.line_count < AT_COMMAND_MAX_LINES) {
+                    data.characters[data.line_count][col_index] = '\0';
+                    col_index = 0;
+                    data.line_count++;
+                }
                 return STATE_MACHINE_NOT_READY;
             } else {
                 return STATE_MACHINE_READY_ERROR;
