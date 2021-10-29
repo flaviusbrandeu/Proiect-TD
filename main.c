@@ -9,6 +9,7 @@ int main(int argc, char *argv[]) {
     uint8_t source[MAXBUFLEN + 1];
     uint16_t newLen;
     FILE *fp;
+    STATE_MACHINE_RETURN_VALUE state = STATE_MACHINE_NOT_READY;
 
     if (argc != 2) {
         fprintf(stderr, "Error: program expects path to file as argument\n");
@@ -16,7 +17,6 @@ int main(int argc, char *argv[]) {
     }
 
     file_path = argv[1];
-    printf("%s\n", file_path);
     if (!(fp = fopen(file_path, "rb"))) {
         perror(file_path);
     }
@@ -28,10 +28,29 @@ int main(int argc, char *argv[]) {
         } else {
             source[newLen] = '\0'; /* Just to be safe. */
             for (int i = 0; i < newLen; i++) {
-                printf("%c", source[i]);
+                state = at_command_parse(source[i]);
+                if (state == STATE_MACHINE_READY_OK || state == STATE_MACHINE_READY_ERROR) {
+                    break;
+                }
             }
         }
+        if (state == STATE_MACHINE_READY_OK || state == STATE_MACHINE_READY_ERROR) {
+            break;
+        }
     } while ((newLen = fread(source, sizeof(char), MAXBUFLEN, fp)));
+
+    switch(state){
+        case STATE_MACHINE_READY_ERROR:
+            printf("STATE_MACHINE_READY_ERROR\n");
+            break;
+        case STATE_MACHINE_READY_OK:
+            printf("STATE_MACHINE_READY_OK\n");
+            break;
+        case STATE_MACHINE_NOT_READY:
+            printf("STATE_MACHINE_NOT_READY\n");
+            break;
+    }
+
     fclose(fp);
     return 0;
 }
