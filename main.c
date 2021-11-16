@@ -1,8 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "at_parser/parser.h"
+#include <string.h>
+#include "parser.h"
 
 #define MAXBUFLEN 4096
+
+AT_COMMAND_DATA data;
 
 int main(int argc, char *argv[]) {
     char *file_path;
@@ -38,6 +41,7 @@ int main(int argc, char *argv[]) {
             break;
         }
     } while ((newLen = fread(source, sizeof(char), MAXBUFLEN, fp)));
+    fclose(fp);
 
     switch (state) {
         case STATE_MACHINE_READY_ERROR:
@@ -45,11 +49,17 @@ int main(int argc, char *argv[]) {
             break;
         case STATE_MACHINE_READY_OK:
             printf("STATE_MACHINE_READY_OK\n");
+            for (uint8_t i = 0; i < data.line_count; i++) {
+                for (uint8_t j = 0; j < strlen(data.characters[i]); j++) {
+                    printf("%c", data.characters[i][j]);
+                }
+                printf("\n");
+            }
             break;
         case STATE_MACHINE_NOT_READY:
             printf("STATE_MACHINE_NOT_READY\n");
             break;
     }
-    fclose(fp);
+
     return 0;
 }

@@ -2,15 +2,14 @@
 // Created by flavius on 28.10.2021.
 //
 
-#include <stdio.h>
-#include <string.h>
 #include "parser.h"
+
 
 STATE_MACHINE_RETURN_VALUE at_command_parse(uint8_t current_char) {
     static uint8_t state = 0;
     static uint8_t col_index = 0;
 
-    printf("state %d\n", state);
+//    printf("state %d\n", state);
     switch (state) {
         case 0: {
             if (current_char == '\r') {
@@ -62,12 +61,6 @@ STATE_MACHINE_RETURN_VALUE at_command_parse(uint8_t current_char) {
         case 5: {
             if (current_char == '\n') {
                 state = 6;
-                for (uint8_t i = 0; i < data.line_count; i++) {
-                    for (uint8_t j = 0; j < strlen(data.characters[i]); j++) {
-                        printf("%c", data.characters[i][j]);
-                    }
-                    printf("\n");
-                }
                 return STATE_MACHINE_READY_OK;
             } else {
                 return STATE_MACHINE_READY_ERROR;

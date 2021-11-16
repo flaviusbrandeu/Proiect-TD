@@ -12,14 +12,14 @@
 
 // Variables and types declaration
 
-typedef struct {
+typedef struct{
     // line terminator '\0' => maximum 99 characters
     uint8_t characters[AT_COMMAND_MAX_LINES][AT_COMMAND_MAX_LINE_SIZE];
     uint8_t status; // ok - 1, error - 2
     uint8_t line_count;
 } AT_COMMAND_DATA;
 
-static AT_COMMAND_DATA data;
+extern AT_COMMAND_DATA data;
 
 typedef enum {
     STATE_MACHINE_NOT_READY,
