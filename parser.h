@@ -6,6 +6,7 @@
 #define __AT_COMMAND_PARSER__
 
 #include <stdint.h>
+#include <string.h>
 
 #define AT_COMMAND_MAX_LINES 100
 #define AT_COMMAND_MAX_LINE_SIZE 100

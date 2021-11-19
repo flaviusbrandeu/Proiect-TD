@@ -60,7 +60,14 @@ STATE_MACHINE_RETURN_VALUE at_command_parse(uint8_t current_char) {
         }
         case 5: {
             if (current_char == '\n') {
-                state = 6;
+                state = 0;
+//                data.line_count = 0;
+//                for (uint8_t i = 0; i < data.line_count; i++) {
+//                    for (uint8_t j = 0; j < strlen(data.characters[i]); j++) {
+//                        printf("%c", data.characters[i][j]);
+//                    }
+//                    printf("\n");
+//                }
                 return STATE_MACHINE_READY_OK;
             } else {
                 return STATE_MACHINE_READY_ERROR;

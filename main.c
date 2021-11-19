@@ -32,13 +32,19 @@ int main(int argc, char *argv[]) {
             source[newLen] = '\0'; /* Just to be safe. */
             for (int i = 0; i < newLen; i++) {
                 state = at_command_parse(source[i]);
-                if (state == STATE_MACHINE_READY_OK || state == STATE_MACHINE_READY_ERROR) {
+                if (state == STATE_MACHINE_READY_OK) {
+                    printf("STATE_MACHINE_READY_OK\n");
+                    for (uint8_t i = 0; i < data.line_count; i++) {
+                        for (uint8_t j = 0; j < strlen(data.characters[i]); j++) {
+                            printf("%c", data.characters[i][j]);
+                        }
+                        printf("\n");
+                    }
+                    printf("\n");
+                } else if (state == STATE_MACHINE_READY_ERROR) {
                     break;
                 }
             }
-        }
-        if (state == STATE_MACHINE_READY_OK || state == STATE_MACHINE_READY_ERROR) {
-            break;
         }
     } while ((newLen = fread(source, sizeof(char), MAXBUFLEN, fp)));
     fclose(fp);
@@ -46,15 +52,6 @@ int main(int argc, char *argv[]) {
     switch (state) {
         case STATE_MACHINE_READY_ERROR:
             printf("STATE_MACHINE_READY_ERROR\n");
-            break;
-        case STATE_MACHINE_READY_OK:
-            printf("STATE_MACHINE_READY_OK\n");
-            for (uint8_t i = 0; i < data.line_count; i++) {
-                for (uint8_t j = 0; j < strlen(data.characters[i]); j++) {
-                    printf("%c", data.characters[i][j]);
-                }
-                printf("\n");
-            }
             break;
         case STATE_MACHINE_NOT_READY:
             printf("STATE_MACHINE_NOT_READY\n");
