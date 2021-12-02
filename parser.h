@@ -28,7 +28,12 @@ typedef enum {
     STATE_MACHINE_READY_ERROR,
 } STATE_MACHINE_RETURN_VALUE;
 
+typedef enum {
+    USUAL_COMMAND,
+    SPECIAL_COMMAND
+} COMMAND_TYPE;
+
 // Functions declaration
-STATE_MACHINE_RETURN_VALUE at_command_parse(uint8_t current_char);
+STATE_MACHINE_RETURN_VALUE at_command_parse(uint8_t current_char, COMMAND_TYPE command_type);
 
 #endif //__AT_COMMAND_PARSER__

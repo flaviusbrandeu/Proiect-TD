@@ -5,7 +5,7 @@
 #include "parser.h"
 
 
-STATE_MACHINE_RETURN_VALUE at_command_parse(uint8_t current_char) {
+STATE_MACHINE_RETURN_VALUE at_command_parse(uint8_t current_char, COMMAND_TYPE command_type) {
     static uint8_t state = 0;
     static uint8_t col_index = 0;
 
@@ -22,7 +22,11 @@ STATE_MACHINE_RETURN_VALUE at_command_parse(uint8_t current_char) {
         }
         case 1: {
             if (current_char == '\n') {
-                state = 2;
+                if (command_type == SPECIAL_COMMAND) {
+                    state = 11;
+                } else {
+                    state = 2;
+                }
                 return STATE_MACHINE_NOT_READY;
             } else {
                 return STATE_MACHINE_READY_ERROR;
@@ -137,8 +141,12 @@ STATE_MACHINE_RETURN_VALUE at_command_parse(uint8_t current_char) {
         }
         case 13: {
             if (current_char == '+') {
-                state = 11;
-                return STATE_MACHINE_NOT_READY;
+                if (command_type == USUAL_COMMAND) {
+                    state = 11;
+                    return STATE_MACHINE_NOT_READY;
+                } else {
+                    return STATE_MACHINE_READY_ERROR;
+                }
             } else if (current_char == '\r') {
                 state = 14;
                 return STATE_MACHINE_NOT_READY;
