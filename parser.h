@@ -30,7 +30,8 @@ typedef enum {
 
 typedef enum {
     USUAL_COMMAND,
-    SPECIAL_COMMAND
+    SPECIAL_COMMAND,
+    SMS_COMMAND
 } COMMAND_TYPE;
 
 // Functions declaration

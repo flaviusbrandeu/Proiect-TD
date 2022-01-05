@@ -40,7 +40,11 @@ STATE_MACHINE_RETURN_VALUE at_command_parse(uint8_t current_char, COMMAND_TYPE c
                 state = 7;
                 return STATE_MACHINE_NOT_READY;
             } else if (current_char == '+') {
-                state = 11;
+                if (command_type == USUAL_COMMAND) {
+                    state = 11;
+                } else if (command_type == SMS_COMMAND) {
+                    state = 16;
+                }
                 return STATE_MACHINE_NOT_READY;
             } else {
                 return STATE_MACHINE_READY_ERROR;
@@ -164,6 +168,97 @@ STATE_MACHINE_RETURN_VALUE at_command_parse(uint8_t current_char, COMMAND_TYPE c
         }
         case 15: {
             if (current_char == 'E') {
+                state = 7;
+                return STATE_MACHINE_NOT_READY;
+            } else if (current_char == 'O') {
+                state = 3;
+                return STATE_MACHINE_NOT_READY;
+            } else {
+                return STATE_MACHINE_READY_ERROR;
+            }
+        }
+        case 16: {
+            if (current_char >= 32 && current_char <= 126) {
+                state = 16;
+                if (data.line_count < AT_COMMAND_MAX_LINES) {
+                    if (col_index < AT_COMMAND_MAX_LINE_SIZE - 1) {
+                        data.characters[data.line_count][col_index] = current_char;
+                        col_index++;
+                    }
+                }
+                return STATE_MACHINE_NOT_READY;
+            } else if (current_char == '\r') {
+                state = 17;
+                return STATE_MACHINE_NOT_READY;
+            } else {
+                return STATE_MACHINE_READY_ERROR;
+            }
+        }
+        case 17: {
+            if (current_char == '\n') {
+                state = 18;
+                if (data.line_count < AT_COMMAND_MAX_LINES) {
+                    if (col_index < AT_COMMAND_MAX_LINE_SIZE - 1) {
+                        data.characters[data.line_count][col_index] = current_char;
+                        col_index++;
+                    }
+                }
+                return STATE_MACHINE_NOT_READY;
+            } else {
+                return STATE_MACHINE_READY_ERROR;
+            }
+        }
+        case 18: {
+            if (current_char >= 32 && current_char <= 126) {
+                state = 18;
+                if (data.line_count < AT_COMMAND_MAX_LINES) {
+                    if (col_index < AT_COMMAND_MAX_LINE_SIZE - 1) {
+                        data.characters[data.line_count][col_index] = current_char;
+                        col_index++;
+                    }
+                }
+                return STATE_MACHINE_NOT_READY;
+            } else if (current_char == '\r') {
+                state = 19;
+                if (data.line_count < AT_COMMAND_MAX_LINES) {
+                    data.characters[data.line_count][col_index] = '\0';
+                    col_index = 0;
+                    data.line_count++;
+                }
+                return STATE_MACHINE_NOT_READY;
+            } else {
+                return STATE_MACHINE_READY_ERROR;
+            }
+        }
+        case 19: {
+            if (current_char == '\n') {
+                state = 20;
+                return STATE_MACHINE_NOT_READY;
+            } else {
+                return STATE_MACHINE_READY_ERROR;
+            }
+        }
+        case 20: {
+            if (current_char == '\r') {
+                state = 21;
+                return STATE_MACHINE_NOT_READY;
+            } else {
+                return STATE_MACHINE_READY_ERROR;
+            }
+        }
+        case 21: {
+            if (current_char == '\n') {
+                state = 22;
+                return STATE_MACHINE_NOT_READY;
+            } else {
+                return STATE_MACHINE_READY_ERROR;
+            }
+        }
+        case 22: {
+            if (current_char == '+') {
+                state = 16;
+                return STATE_MACHINE_NOT_READY;
+            } else if (current_char == 'E') {
                 state = 7;
                 return STATE_MACHINE_NOT_READY;
             } else if (current_char == 'O') {
