@@ -7,7 +7,10 @@
 
 AT_COMMAND_DATA data;
 
-const COMMAND_TYPE commands_types[] = {SMS_COMMAND};
+const COMMAND_TYPE commands_types[] = {USUAL_COMMAND, USUAL_COMMAND, USUAL_COMMAND, SPECIAL_COMMAND, SPECIAL_COMMAND,
+                                       USUAL_COMMAND, SMS_COMMAND, USUAL_COMMAND, USUAL_COMMAND, USUAL_COMMAND,
+                                       USUAL_COMMAND, USUAL_COMMAND, SPECIAL_COMMAND, USUAL_COMMAND, SPECIAL_COMMAND,
+                                       USUAL_COMMAND, SMS_COMMAND, USUAL_COMMAND, SPECIAL_COMMAND, USUAL_COMMAND};
 
 int main(int argc, char *argv[]) {
     char *file_path;
